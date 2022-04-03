@@ -1,9 +1,10 @@
 <template>
   <div id="app">
+    
     <h3>Bienvenido al Test de Conexa</h3>
     <h5>Inicia sesión para testear la app</h5>
     <Login />
-  </div>
+    </div>
 </template>
 
 <script>
