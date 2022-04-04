@@ -1,8 +1,7 @@
 <template>
   <div class="login-container">
-      
     <h3>Bienvenido al Test de Conexa</h3>
-    <h5>Inicia sesión para testear la app</h5>  
+    <h5>Inicia sesión para testear la app</h5>
     <div class="form-container mx-auto" v-if="notRegisterUser === false">
       <b-form>
         <b-form-input
@@ -105,11 +104,14 @@ export default {
   },
   methods: {
     changeForm() {
-     this.notRegisterUser = !this.notRegisterUser;
+      this.notRegisterUser = !this.notRegisterUser;
     },
     async login() {
       if (this.email === "" || this.password === "") {
-        alert("Email y Contraseña son obligatorios");
+        this.$swal({
+          title: "Correo y password obligatorios",
+          icon: "error",
+        });
       } else {
         const data = {
           correo: this.email,
@@ -123,21 +125,34 @@ export default {
         try {
           switch (userLoged.status) {
             case 200:
-              alert(`${userLoged.data.msg}`);
+              this.$swal({
+                title: "Usuario logeado exitosamente",
+                icon: "success",
+              });
               localStorage.setItem("userData", userLoged.data.usuario);
               localStorage.setItem("token", userLoged.data.token);
-              this.$router.push('/tablePhotos')
+              //console.log('token', localStorage.getItem('token'))
+              this.$router.push("/photosTable");
               break;
             case 400:
-              alert(`${userLoged.data.msg}`);
+              this.$swal({
+                title: `${userLoged.data.msg}`,
+                icon: "error",
+              });
               break;
             case 401:
-              alert(`${userLoged.data.msg}`);
+              this.$swal({
+                title: `${userLoged.data.msg}`,
+                icon: "error",
+              });
               break;
           }
         } catch (error) {
-          console.log('err', error)
-          alert("hubo un error del servidor");
+          console.log("err", error);
+          this.$swal({
+            title: `${userLoged.data.msg}`,
+            icon: "error",
+          });
         }
       }
     },
@@ -148,9 +163,15 @@ export default {
         this.newUserPass === "" ||
         this.newUserRepeatPass === ""
       ) {
-        alert("Nombre, Email y Contraseña son obligatorios");
+        this.$swal({
+          title: "Nombre, Email y Contraseña son obligatorios",
+          icon: "error",
+        });
       } else if (this.newUserPass !== this.newUserRepeatPass) {
-        alert("Las contraseñas deben coincidir");
+        this.$swal({
+          title: "Las contraseñas deben coincidir",
+          icon: "error",
+        });
       } else {
         const data = {
           nombre: this.newUserName,
@@ -164,13 +185,19 @@ export default {
         });
         try {
           if (userCreated.status === 200) {
-            alert(`${userCreated.data.msg}`);
+            this.$swal({
+              title: `${userCreated.data.msg}`,
+              icon: "success",
+            });
             localStorage.setItem("userData", userCreated.data.usuario);
           }
-          this.notRegisterUser = false
+          this.notRegisterUser = false;
         } catch (error) {
-          console.log('err', error)
-          alert("hubo un error del servidor");
+          console.log("err", error);
+          this.$swal({
+            title: "Hubo un error en el servidor, intente nuevamente",
+            icon: "error",
+          });
         }
       }
     },

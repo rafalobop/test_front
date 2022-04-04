@@ -1,71 +1,92 @@
 <template>
-  <div class="table-container" style="background:#ccc">
-<Navbar />
-    <div class="table">
-      <ul v-for="(item, index) in dataReq" :key="index" class="dataList">
-        <li><strong>UserId:</strong> {{item.userId}}</li>
-        <li><strong>Id: </strong> {{item.id}}</li>
-        <li><strong>Title: </strong>: {{item.title}}</li>
-        <li><strong>Body</strong> {{item.body}}</li>
-      </ul>
-    </div>
-    <div class="pagination-content">
-
-    <button class="paginate" @click="prevPage" v-if="dataReq.previous !== null">Previous</button>
-    <label>Pagina: {{dataReq.page}} </label>
-    <button class="paginate" @click="nextPage" v-if="dataReq.next !== null">Next</button>
+  <div class="page-container">
+    <Navbar />
+    <div class="table-photos-container">
+      <div class="table-photos">
+        <ul v-for="(item, index) in pictures" :key="index" class="dataList-photos">
+          <li><strong>AlbumId:</strong> {{ item.albumId }}</li>
+          <li><strong>Id: </strong> {{ item.id }}</li>
+          <li><img class="listImg" :src="item.url" :alt="item.title"></li>
+          <li><strong>Title</strong> {{ item.title }}</li>
+        </ul>
+      </div>
+      <div class="pagination-content">
+        <button
+          class="paginate"
+          @click="prevPage"
+          v-if="dataReq.previous !== null"
+        >
+          Previous
+        </button>
+        <label>Pagina: {{ dataReq.page }} </label>
+        <button class="paginate" @click="nextPage" v-if="dataReq.next !== null">
+          Next
+        </button>
+      </div>
     </div>
   </div>
 </template>
 <script>
 import axios from "axios";
 import { backendUrl } from "./../config/index";
-import Navbar from './../components/Navbar.vue'
+import Navbar from "./../components/Navbar.vue";
 export default {
-  components:{
-    Navbar
+  components: {
+    Navbar,
   },
   data() {
     return {
-      dataReq:[]
+      dataReq: [],
+      currentPage:1,
+      pictures:[]
     };
   },
-  created() {
-    console.log('aqui', !localStorage.getItem('token'))
-    if(!localStorage.getItem('token'))
-    alert('debe logearse ')
-    this.$router.push('/')
+  mounted() {
+    console.log("token", localStorage.getItem("token"));
+    if (localStorage.getItem("token") === null) {
+      this.$swal({
+        title: "Debe logearse con su usuario para acceder",
+        icon: "error",
+      });
+      this.$router.push("/");
+    }
     this.chargeData();
   },
   methods: {
-    prevPage(){
-      console.log('prev',this.dataReq.data.previous)
+    prevPage() {
+      this.currentPage = this.currentPage - 1
+      this.chargeData()
+
     },
-    nextPage(){
-      console.log('next', this.dataReq.data.next)
+    nextPage() {
+      this.currentPage = this.currentPage + 1
+      this.chargeData()
     },
     async chargeData() {
       const token = localStorage.getItem("token");
-      //const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1aWQiOiI2MjQ2ZmM1MTlmOTdjMjA2NTczYjk0NzEiLCJpYXQiOjE2NDg5OTY1MzMsImV4cCI6MTY0OTAwMDEzM30.8VtUL0Ew_Eu5NxOPFMKIrWPB5Nhigmv2JT1966klYBU'
+      console.log("token", token);
       if (token) {
         const getPhotos = await axios({
           method: "get",
-          url: `${backendUrl}/api/getData/photos?page=1&limit=10`,
-          //Authorization: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1aWQiOiI2MjQ2ZmM1MTlmOTdjMjA2NTczYjk0NzEiLCJpYXQiOjE2NDg5OTY1MzMsImV4cCI6MTY0OTAwMDEzM30.8VtUL0Ew_Eu5NxOPFMKIrWPB5Nhigmv2JT1966klYBU',
-          Authorization: `${token}`
+          url: `${backendUrl}/api/getData/photos?page=${this.currentPage}&limit=10`,
+          Authorization: `${token}`,
         });
-        console.log('getP', getPhotos)
+        console.log("getP", getPhotos);
         try {
           switch (getPhotos.status) {
             case 200:
-             this.dataReq = getPhotos.data
+              this.dataReq = getPhotos.data;
+              this.pictures = getPhotos.data.data
               break;
-          
+
             default:
               break;
           }
         } catch (error) {
-          alert('Hubo un error en el servidor')
+          this.$swal({
+            title: "Hubo un error en el servidor, intente nuevamente.",
+            icon: "error",
+          });
         }
       }
     },
@@ -73,14 +94,48 @@ export default {
 };
 </script>
 <style scoped>
-.pagination-content{
+.listImg{
+  width: 100%;
+  border-radius: 10px ;
+}
+.table-photos{
+  display: flex;
+  justify-content: space-around;
+  flex-direction: row;
+  flex-wrap: wrap;
+  padding: 10px;
+  
+}
+.table-photos-container{
+  border-radius: 20px;
+  height: 480px;
+  overflow: scroll;
+}
+.table-photos-container::-webkit-scrollbar{
+  width:10px;
+  background-color: #eee;
+}
+.table-photos-container::-webkit-scrollbar:horizontal{
+  display: none;
+}
+.table-photos-container::-webkit-scrollbar-thumb{
+  width:10px;
+  background-color: #4dc8e1;
+  border-radius: 10px;
+}
+.dataList-photos{
+  list-style: none;
+  width: 50%;
+  margin: 10px auto;
+  padding: 5px;
+}
+.pagination-content {
   display: flex;
   justify-content: space-around;
 }
-.paginate{
+.paginate {
   border: none;
   background: transparent;
-  color:#4dc8e1;
-
+  color: #4dc8e1;
 }
 </style>
