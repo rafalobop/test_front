@@ -11,18 +11,22 @@
   </div>
 </template>
 <script>
-import axios from "axios";
-//mport { backendUrl } from "./../config/index";
-
+import { backendUrl } from "./../config/index";
+import axios from 'axios'
 export default {
   data() {
     return {
       dataReq:[]
     };
   },
-  mounted() {
+   created() {
+    console.log('aqui', !localStorage.getItem('token'))
+    if(!localStorage.getItem('token'))
+    alert('debe logearse ')
+    this.$router.push('/')
     this.chargeTable();
   },
+ 
   methods: {
     async chargeTable() {
       const token = localStorage.getItem("token");
@@ -30,9 +34,9 @@ export default {
       if (token) {
         const getPosts = await axios({
           method: "get",
-          url: `http://localhost:3000/api/getData/post`,
-          Authorization: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1aWQiOiI2MjQ2ZmM1MTlmOTdjMjA2NTczYjk0NzEiLCJpYXQiOjE2NDg5OTY1MzMsImV4cCI6MTY0OTAwMDEzM30.8VtUL0Ew_Eu5NxOPFMKIrWPB5Nhigmv2JT1966klYBU',
-          //Authorization: `${token}`
+          url: `${backendUrl}/api/getData/post`,
+          //Authorization: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1aWQiOiI2MjQ2ZmM1MTlmOTdjMjA2NTczYjk0NzEiLCJpYXQiOjE2NDg5OTY1MzMsImV4cCI6MTY0OTAwMDEzM30.8VtUL0Ew_Eu5NxOPFMKIrWPB5Nhigmv2JT1966klYBU',
+          Authorization: `${token}`
         });
         console.log('getP', getPosts)
         try {

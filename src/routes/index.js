@@ -1,30 +1,39 @@
 import Vue from 'vue';
-import Router from 'vue-router';
+import VueRouter from 'vue-router';
+import Home from './../pages/Home.vue'
+import Photos from './../pages/Photos.vue'
+import Posts from './../pages/Posts.vue'
+import Error404 from './../pages/Error404.vue'
 
-Vue.use(Router);
+Vue.use(VueRouter);
 
 
 const routes = [
        {
            path:'/',
            name:'login',
-           component: ()=> import('./../components/Login.vue')
+           component: Home
        },
         {
             path:'/photosTable',
             name:'photosTable',
-            component: ()=> import('./../pages/Photos.vue')
+            component: Photos
         },
         {
             path:'/posts',
             name:'posts',
-            component: ()=> import('./../pages/Posts.vue')
+            component: Posts
+        },
+        {
+            path:'*',
+            name:'error404',
+            component: Error404
         }
     
 ]
-const router = new Router({
+const router = new VueRouter({
     mode:'history',
-    base:process.env.BASE_URL,
+    base:'/',
     routes
 })
 

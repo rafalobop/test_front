@@ -1,19 +1,17 @@
 <template>
   <div id="app">
-    
-    <h3>Bienvenido al Test de Conexa</h3>
-    <h5>Inicia sesión para testear la app</h5>
-    <Login />
+    <!--Login />-->
+    <router-view/>
     </div>
 </template>
 
 <script>
-import Login from './components/Login.vue'
+//import Login from './components/Login.vue'
 
 export default {
   name: 'App',
   components: {
-    Login,
+    //Login,
     
   }
 }

@@ -1,4 +1,4 @@
-<!--<template>
+<template>
   <div class="login-container">
       
     <h3>Bienvenido al Test de Conexa</h3>
@@ -206,4 +206,4 @@ export default {
 .form-input {
   margin-top: 10px;
 }
-</style>-->
+</style>
