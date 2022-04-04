@@ -1,5 +1,6 @@
 <template>
   <div class="login-container">
+    
     <h3>Bienvenido al Test de Conexa</h3>
     <h5>Inicia sesión para testear la app</h5>
     <div class="form-container mx-auto" v-if="notRegisterUser === false">
@@ -131,7 +132,6 @@ export default {
               });
               localStorage.setItem("userData", userLoged.data.usuario);
               localStorage.setItem("token", userLoged.data.token);
-              //console.log('token', localStorage.getItem('token'))
               this.$router.push("/photosTable");
               break;
             case 400:
@@ -148,7 +148,6 @@ export default {
               break;
           }
         } catch (error) {
-          console.log("err", error);
           this.$swal({
             title: `${userLoged.data.msg}`,
             icon: "error",
@@ -193,7 +192,6 @@ export default {
           }
           this.notRegisterUser = false;
         } catch (error) {
-          console.log("err", error);
           this.$swal({
             title: "Hubo un error en el servidor, intente nuevamente",
             icon: "error",
@@ -233,4 +231,5 @@ export default {
 .form-input {
   margin-top: 10px;
 }
+
 </style>

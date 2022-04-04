@@ -42,7 +42,6 @@ export default {
     };
   },
   mounted() {
-    console.log("token", localStorage.getItem("token"));
     if (localStorage.getItem("token") === null) {
       this.$swal({
         title: "Debe logearse con su usuario para acceder",
@@ -64,14 +63,14 @@ export default {
     },
     async chargeData() {
       const token = localStorage.getItem("token");
-      console.log("token", token);
       if (token) {
         const getPhotos = await axios({
           method: "get",
           url: `${backendUrl}/api/getData/photos?page=${this.currentPage}&limit=10`,
-          Authorization: `${token}`,
+          headers:{
+            Authorization: `${token}`,
+            }
         });
-        console.log("getP", getPhotos);
         try {
           switch (getPhotos.status) {
             case 200:

@@ -29,7 +29,6 @@ export default {
     };
   },
   created() {
-    console.log("aqui", !localStorage.getItem("token"));
     if (localStorage.getItem("token") === null) {
       this.$swal({
         title: "Debe logearse con su usuario para acceder",
@@ -47,10 +46,10 @@ export default {
         const getPosts = await axios({
           method: "get",
           url: `${backendUrl}/api/getData/post`,
-          Authorization: `${token}`,
-          "Content-Type": "application/json",
+          headers:{
+            Authorization: `${token}`,
+          }
         });
-        console.log("getP", getPosts);
         try {
           switch (getPosts.status) {
             case 200:
